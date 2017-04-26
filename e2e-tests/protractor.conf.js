@@ -1,4 +1,5 @@
 //jshint strict: false
+//protractor
 exports.config = {
 
   allScriptsTimeout: 11000,
