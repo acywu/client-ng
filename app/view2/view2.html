@@ -7,10 +7,8 @@
           <a class="navbar-brand" href="#">SNI</a>
         </div>
         <ul class="nav navbar-nav">
-          <li class="active"><a href="#">Home</a></li>
-          <li><a href="#">Page 1</a></li>
-          <li><a href="#">Page 2</a></li>
-          <li><a href="#">Page 3</a></li>
+          <li><a href="#">Home</a></li>
+          <li class="active"><a href="#!/view2">Dashboard</a></li>
         </ul>
       </div>
     </nav>
@@ -28,8 +26,13 @@
   </canvas>
   </div>
   <div
-  <div class="col-sm-1 text-center">
-    <p>chart</p>
+  <div class="col-sm-1 text-center container">
+    <ul id="messages">
+      <li ng-repeat="msg in messages">{{msg}}</li>
+    </ul>
+    <form action="">
+      <input id="m" autocomplete="off" ng-model="message"/><button ng-click="sendMessage()">Send</button>
+    </form>
   </div>
   <div class="col-sm-1"></div>
 

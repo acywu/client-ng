@@ -6,10 +6,14 @@ angular.module('myApp', [
   'myApp.view1',
   'myApp.view2',
   'myApp.version',
-  'chart.js'
+  'chart.js',
+  'btford.socket-io'
 ]).
 config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');
 
   $routeProvider.otherwise({redirectTo: '/view1'});
-}]);
+}]).
+factory('socketInstance', function (socketFactory) {
+  return socketFactory();
+});

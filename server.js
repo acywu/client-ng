@@ -1,8 +1,11 @@
 var authConfig = require('./config/auth'),
   express = require('express'),
   passport = require('passport'),
-  GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+  GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
+  WechatStrategy = require('passport-wechat'),
+  WeiboStrategy = require('passport-weibo');
 var port = process.env.PORT || 8000;
+
 // Passport session setup.
 //
 //   For persistent logins with sessions, Passport needs to serialize users into
@@ -45,6 +48,10 @@ passport.use(new GoogleStrategy(
 
 var app = express();
 //app.set('view engine', 'hbs');
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
@@ -99,6 +106,40 @@ app.get('/auth/oauth/google/callback',
     res.redirect('http://localhost:8000/#!/view2');
   });
 
+app.get('/auth/wechat',
+  passport.authenticate('google', { scope: ['openid email profile'] }));
+
+// GET /auth/google/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.get('/auth/oauth/wechat/callback',
+  passport.authenticate('wechat', {
+    failureRedirect: '/login'
+  }),
+  function(req, res) {
+    // Authenticated successfully
+    res.redirect('http://localhost:8000/#!/view2');
+  });
+
+app.get('/auth/weibo',
+  passport.authenticate('weibo', { scope: ['openid email profile'] }));
+
+// GET /auth/google/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.get('/auth/oauth/weibo/callback',
+  passport.authenticate('weibo', {
+    failureRedirect: '/login'
+  }),
+  function(req, res) {
+    // Authenticated successfully
+    res.redirect('http://localhost:8000/#!/view2');
+  });
+
 app.get('/account', ensureAuthenticated, function(req, res) {
   res.render('account', {
     user: req.user
@@ -108,6 +149,12 @@ app.get('/account', ensureAuthenticated, function(req, res) {
 app.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/');
+});
+
+io.on('connection', function(socket){
+  socket.on('userChat', function(msg){
+    io.emit('userChat', msg);
+  });
 });
 
 app.listen(port, function() {
