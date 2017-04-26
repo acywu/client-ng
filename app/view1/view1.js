@@ -9,6 +9,9 @@ angular.module('myApp.view1', ['ngRoute'])
   });
 }])
 
-.controller('View1Ctrl', [function() {
+.controller('View1Ctrl', ['$scope','$location', function($scope, $location) {
+  $scope.auth = function(){
 
+    $location.path('http://localhost:8000/auth/google')
+  };
 }]);
